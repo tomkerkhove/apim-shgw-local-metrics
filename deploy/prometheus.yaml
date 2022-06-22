@@ -40,75 +40,13 @@ spec:
           containerPort: 9090
         args:
           - --config.file=/tmp/prometheus.yaml
-          # - --storage.tsdb.retention.time=15d
-          # - --storage.tsdb.path=/data
         volumeMounts:
           - mountPath: /tmp
             name: sputnik-metrics-config-files
-          # - name: prometheus-volume
-          #   mountPath: /data
-          #   subPath: ""
       volumes:
         - name: sputnik-metrics-config-files
           configMap:
             name: sputnik-metrics-prometheus-config
-        # - name: prometheus-volume
-        #   persistentVolumeClaim:
-        #      claimName: persistent-volume-claim-prometheus
-# ---
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: prometheus-persistent-volume
-#   labels:
-#     type: local
-#     app: sputnik-metrics-prometheus
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 8Gi
-# spec:
-#   storageClassName: manual
-#   capacity:
-#     storage: 2Gi
-#   accessModes:
-#     - ReadWriteOnce
-#   hostPath:
-#     path: "/mnt/sda1/data/prometheus"
----
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata: 
-#   name: persistent-volume-claim-prometheus
-#   labels:
-#     app: sputnik-metrics-prometheus
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 10Gi
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 2Gi
-# spec:  
-#   storageClassName: manual  
-#   accessModes:
-#    - ReadWriteOnce
-#   resources:
-#    requests:   
-#      storage: 1Gi
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: "8Gi"
 ---
 apiVersion: v1
 kind: Service
