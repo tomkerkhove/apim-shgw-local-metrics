@@ -1,0 +1,12 @@
+gateway:
+  configuration:
+    uri: '<apim-tenant>.configuration.azure-api.net'
+  auth:
+    key: '<auth token>'
+observability:
+  opentelemetry:
+    enabled: true
+    collector:
+      uri: http://opentelemetry-collector:4317
+service:
+  type: LoadBalancer

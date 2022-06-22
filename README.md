@@ -11,7 +11,7 @@ helm install opentelemetry-collector open-telemetry/opentelemetry-collector --va
 
 To install Azure API Management's self-hosted gateway:
 ```shell
-helm install azure-api-management-gateway --set gateway.configuration.uri='<apim-tenant>.configuration.azure-api.net' --set gateway.auth.key='<auth token>' --set observability.opentelemetry.enabled=true --set observability.opentelemetry.collector.uri=http://opentelemetry-collector:4317 --set service.type=LoadBalancer azure-apim-gateway/azure-api-management-gateway
+helm install azure-api-management-gateway --values deploy/shgw-config.yaml azure-apim-gateway/azure-api-management-gateway
 ```
 
 To install Grafana:
