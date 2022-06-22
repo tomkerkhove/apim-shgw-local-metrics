@@ -1,0 +1,109 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-echo-cron-v2.1.0-1
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - /bin/sh
+            - -ec
+            - 'curl -i "http://azure-api-management-gateway-v210:8080/echo/resource?param1=sample" -H "X-API-Key: <api-key>"' #
+            image: curlimages/curl:7.72.0
+            name: echo
+          restartPolicy: OnFailure
+  schedule: '* * * * *'
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-echo-cron-v2.1.0-2
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - /bin/sh
+            - -ec
+            - 'curl -i "http://azure-api-management-gateway-v210:8080/echo/resource?param1=sample" -H "X-API-Key: <api-key>"' #
+            image: curlimages/curl:7.72.0
+            name: echo
+          restartPolicy: OnFailure
+  schedule: '* * * * *'
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-echo-cron-v2.1.0-3
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - /bin/sh
+            - -ec
+            - 'curl -i "http://azure-api-management-gateway-v210:8080/echo/resource?param1=sample" -H "X-API-Key: <api-key>"' #
+            image: curlimages/curl:7.72.0
+            name: echo
+          restartPolicy: OnFailure
+  schedule: '* * * * *'
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-echo-cron-v2.1.0-4
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - /bin/sh
+            - -ec
+            - 'curl -i "http://azure-api-management-gateway-v210:8080/echo/resource?param1=sample" -H "X-API-Key: <api-key>"' #
+            image: curlimages/curl:7.72.0
+            name: echo
+          restartPolicy: OnFailure
+  schedule: '* * * * *'
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-echo-cron-v2.1.0-5
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - /bin/sh
+            - -ec
+            - 'curl -i "http://azure-api-management-gateway-v210:8080/echo/resource?param1=sample" -H "X-API-Key: <api-key>"' #
+            image: curlimages/curl:7.72.0
+            name: echo
+          restartPolicy: OnFailure
+  schedule: '* * * * *'
+  successfulJobsHistoryLimit: 3
