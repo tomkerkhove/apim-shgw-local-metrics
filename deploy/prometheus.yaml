@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sputnik-metrics-prometheus-config
+data:
+  prometheus.yaml: |
+    global:
+      scrape_interval:     3s
+      evaluation_interval: 3s
+    scrape_configs:
+      - job_name: 'statsd'
+        static_configs:
+          - targets: ['sputnik-metrics-statsd-scrape:9102']
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['sputnik-metrics-prometheus:9090']
+      - job_name: 'otel'
+        static_configs:
+          - targets: ['opentelemetry-collector:8889']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sputnik-metrics-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sputnik-metrics-prometheus
+  template:
+    metadata:
+      labels:
+        app: sputnik-metrics-prometheus
+    spec:
+      containers:
+      - name: sputnik-metrics-prometheus
+        image: prom/prometheus
+        ports:
+        - name: tcp
+          containerPort: 9090
+        args:
+          - --config.file=/tmp/prometheus.yaml
+          # - --storage.tsdb.retention.time=15d
+          # - --storage.tsdb.path=/data
+        volumeMounts:
+          - mountPath: /tmp
+            name: sputnik-metrics-config-files
+          # - name: prometheus-volume
+          #   mountPath: /data
+          #   subPath: ""
+      volumes:
+        - name: sputnik-metrics-config-files
+          configMap:
+            name: sputnik-metrics-prometheus-config
+        # - name: prometheus-volume
+        #   persistentVolumeClaim:
+        #      claimName: persistent-volume-claim-prometheus
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: prometheus-persistent-volume
+#   labels:
+#     type: local
+#     app: sputnik-metrics-prometheus
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 8Gi
+# spec:
+#   storageClassName: manual
+#   capacity:
+#     storage: 2Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: "/mnt/sda1/data/prometheus"
+---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata: 
+#   name: persistent-volume-claim-prometheus
+#   labels:
+#     app: sputnik-metrics-prometheus
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 10Gi
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 2Gi
+# spec:  
+#   storageClassName: manual  
+#   accessModes:
+#    - ReadWriteOnce
+#   resources:
+#    requests:   
+#      storage: 1Gi
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: "8Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sputnik-metrics-prometheus
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: sputnik-metrics-prometheus

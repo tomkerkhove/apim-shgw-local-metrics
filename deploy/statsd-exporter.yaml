@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sputnik-metrics-statsd-config
+data:
+  statsd.yaml: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sputnik-metrics-statsd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sputnik-metrics-statsd
+  template:
+    metadata:
+      labels:
+        app: sputnik-metrics-statsd
+    spec:
+      containers:
+      - name: sputnik-metrics-statsd
+        image: prom/statsd-exporter
+        ports:
+        - name: tcp
+          containerPort: 9102
+        - name: udp
+          containerPort: 8125
+          protocol: UDP
+        args:
+          - --statsd.mapping-config=/tmp/statsd.yaml
+          - --statsd.listen-udp=:8125
+          - --web.listen-address=:9102
+        volumeMounts:
+          - mountPath: /tmp
+            name: sputnik-metrics-config-files
+      volumes:
+        - name: sputnik-metrics-config-files
+          configMap:
+            name: sputnik-metrics-statsd-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sputnik-metrics-statsd
+spec:
+  type: NodePort
+  ports:
+  - name: udp
+    port: 8125
+    targetPort: 8125
+    protocol: UDP
+  selector:
+    app: sputnik-metrics-statsd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sputnik-metrics-statsd-scrape
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 9102
+    targetPort: 9102
+  selector:
+    app: sputnik-metrics-statsd
